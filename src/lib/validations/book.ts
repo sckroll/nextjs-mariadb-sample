@@ -1,10 +1,7 @@
 import { z } from "zod";
 
 export const bookSchema = z.object({
-  title: z.string({
-    required_error: "Title is required",
-    invalid_type_error: "Title must be a string",
-  }).min(1, "Title is required"),
+  title: z.string().min(1, "Title is required"),
   author: z.string().optional(),
   publisher: z.string().optional(),
   coverImage: z.string().url().optional().or(z.literal('')),
