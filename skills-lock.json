@@ -81,6 +81,16 @@
       "sourceType": "github",
       "computedHash": "37226d4220d844377e6b2a386c51a011df4cd130855ff0b80bcc22f9c28abd57"
     },
+    "tailwind-4-docs": {
+      "source": "lombiq/tailwind-agent-skills",
+      "sourceType": "github",
+      "computedHash": "1d945a9c640605075d41658c457920fa0afa6c1be5c90445ab12b6cd33256983"
+    },
+    "tailwind-best-practices": {
+      "source": "ofershap/tailwind-best-practices",
+      "sourceType": "github",
+      "computedHash": "6ad7276b158b035149ea6825b1f2babeca7bbd06f5cd74eae35c5c92d50fe003"
+    },
     "vercel-composition-patterns": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
