@@ -1,12 +1,34 @@
 import AddBookForm from "@/components/books/AddBookForm";
-// import { createBook } from "@/actions/book"; // Will be integrated later
+import { createBook } from "@/actions/book";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function NewBookPage() {
+export default async function NewBookPage() {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+
+  if (!session) {
+    redirect("/login");
+  }
+
   const handleAddBook = async (formData: FormData) => {
     "use server";
-    // Wrapper for server action
-    // In a real scenario we need the userId from session
-    console.log("Submit", formData.get("title"));
+    
+    // Parse FormData into object
+    const rawData = {
+      title: formData.get("title") as string,
+      author: formData.get("author") as string || undefined,
+      publisher: formData.get("publisher") as string || undefined,
+      totalPages: Number(formData.get("totalPages")),
+      status: "WISH" as const, // default status for now
+    };
+
+    await createBook(session.user.id, rawData);
+    
+    // Redirect to dashboard after successful creation
+    redirect("/dashboard");
   };
 
   return (
