@@ -11,10 +11,10 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    async hashPassword(password) {
+    async hashPassword(password: string) {
       return await bcrypt.hash(password, 10);
     },
-    async verifyPassword(password, hash) {
+    async verifyPassword(password: string, hash: string) {
       return await bcrypt.compare(password, hash);
     },
   },
