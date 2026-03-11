@@ -1,17 +1,58 @@
-import { mysqlTable, varchar, timestamp, int, date, decimal, text, mysqlEnum } from 'drizzle-orm/mysql-core';
+import { mysqlTable, varchar, timestamp, int, date, decimal, text, mysqlEnum, boolean } from 'drizzle-orm/mysql-core';
 import { sql } from 'drizzle-orm';
 
-export const users = mysqlTable('users', {
+// Better Auth - User Table
+export const user = mysqlTable('user', {
   id: varchar('id', { length: 36 }).primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
   email: varchar('email', { length: 255 }).notNull().unique(),
-  passwordHash: varchar('password_hash', { length: 255 }).notNull(),
-  createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp('updated_at').default(sql`CURRENT_TIMESTAMP`).onUpdateNow(),
+  emailVerified: boolean('email_verified').notNull().default(false),
+  image: varchar('image', { length: 255 }),
+  createdAt: timestamp('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`).onUpdateNow(),
 });
 
+// Better Auth - Session Table
+export const session = mysqlTable('session', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  userId: varchar('user_id', { length: 36 }).notNull().references(() => user.id, { onDelete: 'cascade' }),
+  token: varchar('token', { length: 255 }).notNull().unique(),
+  expiresAt: timestamp('expires_at').notNull(),
+  ipAddress: varchar('ip_address', { length: 45 }),
+  userAgent: text('user_agent'),
+  createdAt: timestamp('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`).onUpdateNow(),
+});
+
+// Better Auth - Account Table (for OAuth)
+export const account = mysqlTable('account', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  userId: varchar('user_id', { length: 36 }).notNull().references(() => user.id, { onDelete: 'cascade' }),
+  accountId: varchar('account_id', { length: 255 }).notNull(),
+  providerId: varchar('provider_id', { length: 255 }).notNull(),
+  accessToken: text('access_token'),
+  refreshToken: text('refresh_token'),
+  idToken: text('id_token'),
+  expiresAt: timestamp('expires_at'),
+  password: text('password'),
+  createdAt: timestamp('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`).onUpdateNow(),
+});
+
+// Better Auth - Verification Table
+export const verification = mysqlTable('verification', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  identifier: varchar('identifier', { length: 255 }).notNull(),
+  value: varchar('value', { length: 255 }).notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  createdAt: timestamp('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`).onUpdateNow(),
+});
+
+// ReadLog Domain - Books Table
 export const books = mysqlTable('books', {
   id: varchar('id', { length: 36 }).primaryKey(),
-  userId: varchar('user_id', { length: 36 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: varchar('user_id', { length: 36 }).notNull().references(() => user.id, { onDelete: 'cascade' }),
   title: varchar('title', { length: 255 }).notNull(),
   author: varchar('author', { length: 255 }),
   publisher: varchar('publisher', { length: 255 }),
@@ -47,7 +88,7 @@ export const readingProgress = mysqlTable('reading_progress', {
 
 export const tags = mysqlTable('tags', {
   id: varchar('id', { length: 36 }).primaryKey(),
-  userId: varchar('user_id', { length: 36 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: varchar('user_id', { length: 36 }).notNull().references(() => user.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 100 }).notNull(),
   color: varchar('color', { length: 50 }).notNull(),
   createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),
@@ -64,7 +105,7 @@ export const bookTags = mysqlTable('book_tags', {
 
 export const goals = mysqlTable('goals', {
   id: varchar('id', { length: 36 }).primaryKey(),
-  userId: varchar('user_id', { length: 36 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: varchar('user_id', { length: 36 }).notNull().references(() => user.id, { onDelete: 'cascade' }),
   periodType: mysqlEnum('period_type', ['MONTHLY', 'YEARLY']).notNull(),
   targetType: mysqlEnum('target_type', ['BOOKS', 'PAGES', 'DAYS']).notNull(),
   targetValue: int('target_value').notNull(),
