@@ -61,10 +61,46 @@ MariaDB 테이블 구조 설계입니다.
 
 ```mermaid
 erDiagram
-    users {
+    user {
         VARCHAR_UUID id PK
+        VARCHAR name "Not Null"
         VARCHAR email "Unique, Not Null"
-        VARCHAR password_hash "Not Null"
+        BOOLEAN email_verified "Not Null"
+        VARCHAR image
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    session {
+        VARCHAR_UUID id PK
+        VARCHAR user_id FK "Not Null, Cascade"
+        VARCHAR token "Unique, Not Null"
+        TIMESTAMP expires_at "Not Null"
+        VARCHAR ip_address
+        TEXT user_agent
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    account {
+        VARCHAR_UUID id PK
+        VARCHAR user_id FK "Not Null, Cascade"
+        VARCHAR account_id "Not Null"
+        VARCHAR provider_id "Not Null"
+        TEXT access_token
+        TEXT refresh_token
+        TEXT id_token
+        TIMESTAMP expires_at
+        TEXT password
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    verification {
+        VARCHAR_UUID id PK
+        VARCHAR identifier "Not Null"
+        VARCHAR value "Not Null"
+        TIMESTAMP expires_at "Not Null"
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }
@@ -139,13 +175,19 @@ erDiagram
     tags ||--o{ book_tags : "applied to"
 ```
 
-### 4.1 `users`
+### 4.1 Better Auth 연동 테이블 (`user`, `session`, `account`, `verification`)
 
-- `id` (VARCHAR/UUID, PK)
-- `email` (VARCHAR, Unique, Not Null)
-- `password_hash` (VARCHAR, Not Null) - `bcrypt` 해시 저장
-- `created_at` (TIMESTAMP)
-- `updated_at` (TIMESTAMP)
+- **`user`**
+  - `id` (VARCHAR/UUID, PK)
+  - `name` (VARCHAR, Not Null)
+  - `email` (VARCHAR, Unique, Not Null)
+  - `email_verified` (BOOLEAN, Not Null)
+  - `image` (VARCHAR)
+  - `created_at` (TIMESTAMP)
+  - `updated_at` (TIMESTAMP)
+- **`session`**: 사용자 세션 정보
+- **`account`**: 소셜 로그인 연동 정보
+- **`verification`**: 이메일 등 인증 정보
 
 ### 4.2 `books`
 
