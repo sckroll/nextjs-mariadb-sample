@@ -10,6 +10,7 @@ vi.mock("@/db", () => {
     set: vi.fn().mockReturnThis(),
     where: vi.fn().mockReturnThis(),
     $dynamic: vi.fn().mockReturnThis(),
+    innerJoin: vi.fn().mockReturnThis(),
     limit: vi.fn().mockReturnThis(),
     then: function (resolve: any) {
       resolve([{ id: "1", title: "Test Book", readPages: 50, status: mockBookStatus }]);
@@ -40,8 +41,8 @@ describe("도서 관련 서버 액션", () => {
     expect(books[0].title).toBe("Test Book");
   });
 
-  it("getBooks는 검색어와 상태 필터를 적용해야 한다", async () => {
-    const books = await getBooks("test-user-id", { search: "test", status: "READING" });
+  it("getBooks는 검색어, 상태, 태그 필터를 적용해야 한다", async () => {
+    const books = await getBooks("test-user-id", { search: "test", status: "READING", tagId: "tag-1" });
     expect(books).toBeDefined();
   });
 

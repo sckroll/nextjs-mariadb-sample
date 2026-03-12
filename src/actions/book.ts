@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { books, readingProgress } from "@/db/schema";
+import { books, readingProgress, bookTags } from "@/db/schema";
 import { bookSchema } from "@/lib/validations/book";
 import { eq, desc, and, like } from "drizzle-orm";
 import { randomUUID } from "crypto";
@@ -34,10 +34,35 @@ export async function createBook(userId: string, data: import("zod").infer<typeo
  * @param {Object} [filters] - 필터 옵션
  * @param {string} [filters.search] - 도서 제목 검색어
  * @param {string} [filters.status] - 도서 읽기 상태
+ * @param {string} [filters.tagId] - 태그 ID
  * @returns {Promise<Array>} 도서 목록
  */
-export async function getBooks(userId: string, filters?: { search?: string, status?: string }) {
-  let query = db.select().from(books).where(eq(books.userId, userId)).$dynamic();
+export async function getBooks(userId: string, filters?: { search?: string, status?: string, tagId?: string }) {
+  let query = db.select({
+    id: books.id,
+    userId: books.userId,
+    title: books.title,
+    author: books.author,
+    publisher: books.publisher,
+    coverImage: books.coverImage,
+    totalPages: books.totalPages,
+    status: books.status,
+    startDate: books.startDate,
+    endDate: books.endDate,
+    rating: books.rating,
+    oneLiner: books.oneLiner,
+    createdAt: books.createdAt,
+    updatedAt: books.updatedAt,
+  })
+    .from(books)
+    .where(eq(books.userId, userId))
+    .$dynamic();
+
+  if (filters?.tagId) {
+    query = query
+      .innerJoin(bookTags, eq(books.id, bookTags.bookId))
+      .where(and(eq(books.userId, userId), eq(bookTags.tagId, filters.tagId)));
+  }
 
   if (filters?.status) {
     query = query.where(and(eq(books.userId, userId), eq(books.status, filters.status as any)));
