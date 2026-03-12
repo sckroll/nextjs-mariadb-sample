@@ -6,14 +6,13 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/register");
+  const isHomeRoute = pathname === "/";
   
-  if (!sessionToken && !isAuthRoute) {
-    if (pathname !== "/") {
-        return NextResponse.redirect(new URL("/login", request.url));
-    }
+  if (!sessionToken && !isAuthRoute && !isHomeRoute) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (sessionToken && isAuthRoute) {
+  if (sessionToken && (isAuthRoute || isHomeRoute)) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
