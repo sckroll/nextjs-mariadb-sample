@@ -29,6 +29,15 @@ This document defines the guidelines that AI agents (Gemini, Claude, etc.) must 
 - Write concise and clear commit messages in English.
 - Examples: `feat: add book validation logic`, `test: implement TDD for book registration`
 
+### 3.3 Testing Async Server Components
+- When testing Next.js async Server Components using Vitest and React Testing Library, you cannot render them directly using `<Component />` syntax.
+- Instead, await the component and render the resolved JSX:
+  ```tsx
+  const resolvedComponent = await AsyncServerComponent();
+  render(resolvedComponent);
+  ```
+- Ensure to properly mock Next.js server-side functions like `next/headers`, `next/navigation`, and auth session calls using `vi.mock()`.
+
 ## 4. Database & Schema Management
 - When modifying the schema, update `src/db/schema.ts` and ensure you run `npx drizzle-kit push` to apply the changes to the database.
 - Maintain the 4 core tables required for Better Auth integration: `user`, `session`, `account`, and `verification`.
