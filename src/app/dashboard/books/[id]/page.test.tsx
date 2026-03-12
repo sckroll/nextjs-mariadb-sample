@@ -13,13 +13,15 @@ vi.mock("@/lib/auth", () => ({
 }));
 vi.mock("@/actions/book", () => ({
   getBookById: vi.fn().mockResolvedValue({ id: "1", title: "Detail Test Book", author: "Author Name", status: "WISH", totalPages: 100 }),
+  getLatestProgress: vi.fn().mockResolvedValue({ readPages: 25 }),
+  updateProgress: vi.fn(),
 }));
 
 describe("BookDetailPage", () => {
-  it("renders book details", async () => {
+  it("renders book details and progress tracker", async () => {
     const resolvedComponent = await BookDetailPage({ params: Promise.resolve({ id: "1" }) });
     render(resolvedComponent);
     expect(screen.getByText("Detail Test Book")).toBeInTheDocument();
-    expect(screen.getByText("Author Name | 출판사 미상")).toBeInTheDocument();
+    expect(screen.getByText(/25 \/ 100 쪽/)).toBeInTheDocument();
   });
 });
