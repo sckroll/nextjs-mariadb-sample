@@ -43,17 +43,17 @@ This document tracks the high-level progress of the ReadLog project and outlines
 - [x] **Assign Tags to Books:** UI to attach multiple tags to a single book.
 - [x] **Filter by Tags:** Allow users to filter their library using selected tags.
 
-## 📊 Phase 6: Statistics, Goals & Calendar (Upcoming)
-- [ ] **Monthly Statistics:** 
+## ✅ Phase 6: Statistics, Goals & Calendar (Completed)
+- [x] **Monthly Statistics:** 
   - Calculate books read, pages read, and average rating for the current month.
   - Display charts or summary cards on a `/dashboard/statistics` page.
-- [ ] **Reading Goals:** 
-  - UI to set monthly or yearly goals (e.g., read 10 books this year).
+- [x] **Reading Goals:** 
+  - UI to set monthly or yearly goals.
   - Show goal progress based on completed books or pages.
-- [ ] **Reading Calendar:**
+- [x] **Reading Calendar:**
   - Build a calendar view showing days with reading activity based on `reading_progress` logs.
 
-## 🚀 Phase 7: Polish & Advanced Features (Optional/Future)
+## 🚀 Phase 7: Polish & Advanced Features (Upcoming)
 - [ ] Integrate Kakao Book Search API for automatic book info population.
 - [ ] Responsive UI refinements for mobile devices.
 - [ ] Performance optimizations (caching, index tuning).
