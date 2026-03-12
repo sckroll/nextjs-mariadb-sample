@@ -1,0 +1,23 @@
+import { render, screen } from "@testing-library/react";
+import DashboardPage from "./page";
+import { describe, it, expect, vi } from "vitest";
+
+vi.mock("next/headers", () => ({ headers: vi.fn() }));
+vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
+vi.mock("@/lib/auth", () => ({
+  auth: { api: { getSession: vi.fn().mockResolvedValue({ user: { id: "user-1" } }) } },
+}));
+
+vi.mock("@/actions/book", () => ({
+  getBooks: vi.fn().mockResolvedValue([
+    { id: "1", title: "Test Book 1", status: "WISH" }
+  ]),
+}));
+
+describe("DashboardPage", () => {
+  it("renders fetched books", async () => {
+    const resolvedComponent = await DashboardPage();
+    render(resolvedComponent);
+    expect(await screen.findByText("Test Book 1")).toBeInTheDocument();
+  });
+});
