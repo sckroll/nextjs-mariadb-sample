@@ -61,7 +61,8 @@ This document tracks the high-level progress of the ReadLog project and outlines
   - Form to change password.
   - Logout functionality.
 
-## 🚀 Phase 7: Polish & Advanced Features (Upcoming)
+## ✅ Phase 7: Polish & Advanced Features (In Progress)
+- [x] **Landing Page Redesign:** Implement responsive landing page based on Figma designs.
 - [ ] Integrate Kakao Book Search API for automatic book info population.
 - [ ] Responsive UI refinements for mobile devices.
 - [ ] Performance optimizations (caching, index tuning).
