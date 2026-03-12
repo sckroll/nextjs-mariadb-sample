@@ -23,8 +23,8 @@ vi.mock("@/actions/note", () => ({
   deleteNote: vi.fn(),
 }));
 
-describe("BookDetailPage", () => {
-  it("renders book details, progress tracker, and notes", async () => {
+describe("도서 상세 페이지", () => {
+  it("도서 정보, 진행률, 노트를 렌더링해야 한다", async () => {
     const resolvedComponent = await BookDetailPage({ params: Promise.resolve({ id: "1" }) });
     render(resolvedComponent);
     expect(screen.getByText("Detail Test Book")).toBeInTheDocument();

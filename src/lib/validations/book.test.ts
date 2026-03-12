@@ -1,7 +1,7 @@
 import { bookSchema } from "@/lib/validations/book";
 
-describe("bookSchema", () => {
-  it("should validate a correct book object", () => {
+describe("bookSchema 검증", () => {
+  it("올바른 도서 객체를 통과시켜야 한다", () => {
     const validBook = {
       title: "The Great Gatsby",
       author: "F. Scott Fitzgerald",
@@ -14,7 +14,7 @@ describe("bookSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("should fail validation if title is missing", () => {
+  it("제목이 누락되면 검증에 실패해야 한다", () => {
     const invalidBook = {
       author: "F. Scott Fitzgerald",
       totalPages: 180,
@@ -27,7 +27,7 @@ describe("bookSchema", () => {
     }
   });
 
-  it("should fail validation if totalPages is less than 1", () => {
+  it("총 페이지 수가 1보다 작으면 검증에 실패해야 한다", () => {
     const invalidBook = {
       title: "The Great Gatsby",
       totalPages: 0,
@@ -40,11 +40,11 @@ describe("bookSchema", () => {
     }
   });
 
-  it("should format string rating as decimal constraint permits", () => {
+  it("평점은 0.5 단위여야 한다", () => {
     const validBook = {
       title: "The Great Gatsby",
       totalPages: 100,
-      rating: 4.3, // Not a multiple of 0.5
+      rating: 4.3, // 0.5의 배수가 아님
     };
 
     const result = bookSchema.safeParse(validBook);

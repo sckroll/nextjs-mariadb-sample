@@ -18,8 +18,8 @@ vi.mock("@/actions/book", () => ({
   ]),
 }));
 
-describe("DashboardPage", () => {
-  it("renders fetched books", async () => {
+describe("대시보드 페이지", () => {
+  it("가져온 도서 목록을 렌더링해야 한다", async () => {
     const resolvedComponent = await DashboardPage({ searchParams: Promise.resolve({}) });
     render(resolvedComponent);
     expect(await screen.findByText("Test Book 1")).toBeInTheDocument();

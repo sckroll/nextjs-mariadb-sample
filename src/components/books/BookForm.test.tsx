@@ -3,7 +3,7 @@ import BookForm from "./BookForm";
 import { describe, it, expect, vi } from "vitest";
 
 describe("BookForm", () => {
-  it("renders with initial data", () => {
+  it("기존 데이터와 함께 폼을 렌더링해야 한다", () => {
     const initialData = {
       title: "Existing Book",
       author: "Existing Author",

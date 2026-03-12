@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 
-// Mock db call
+// DB 호출 모킹
 vi.mock("@/db", () => {
   const queryBuilder = {
     from: vi.fn().mockReturnThis(),
@@ -23,19 +23,19 @@ vi.mock("@/db", () => {
 
 import { createNote, getNotes, deleteNote } from "./note";
 
-describe("note actions", () => {
-  it("createNote adds a new note", async () => {
+describe("노트 관련 서버 액션", () => {
+  it("createNote는 새로운 노트를 추가해야 한다", async () => {
     const result = await createNote({ bookId: "1", content: "Great read!" });
     expect(result.success).toBe(true);
   });
 
-  it("getNotes returns all notes for a book", async () => {
+  it("getNotes는 도서의 모든 노트를 반환해야 한다", async () => {
     const notes = await getNotes("1");
     expect(notes).toHaveLength(1);
     expect(notes[0].content).toBe("Test Note");
   });
 
-  it("deleteNote removes a note", async () => {
+  it("deleteNote는 노트를 삭제해야 한다", async () => {
     const result = await deleteNote("note-1");
     expect(result.success).toBe(true);
   });

@@ -12,8 +12,8 @@ vi.mock("@/actions/book", () => ({
   updateBook: vi.fn(),
 }));
 
-describe("EditBookPage", () => {
-  it("renders the edit form with book data", async () => {
+describe("도서 수정 페이지", () => {
+  it("도서 정보를 포함한 수정 폼을 렌더링해야 한다", async () => {
     const resolvedComponent = await EditBookPage({ params: Promise.resolve({ id: "1" }) });
     render(resolvedComponent);
     

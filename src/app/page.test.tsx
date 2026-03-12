@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import Home from "@/app/page";
 
-describe("Home Page", () => {
-  it("renders the main heading", () => {
+describe("홈 페이지", () => {
+  it("메인 제목을 렌더링해야 한다", () => {
     render(<Home />);
     
     const heading = screen.getByRole("heading", { level: 1 });
@@ -10,7 +10,7 @@ describe("Home Page", () => {
     expect(heading).toHaveTextContent("ReadLog");
   });
 
-  it("renders login and register links", () => {
+  it("로그인 및 회원가입 링크를 렌더링해야 한다", () => {
     render(<Home />);
     
     const loginLink = screen.getByRole("link", { name: "로그인" });

@@ -3,7 +3,7 @@ import BookCard from "./BookCard";
 import { describe, it, expect } from "vitest";
 
 describe("BookCard", () => {
-  it("renders book title, author, and status", () => {
+  it("도서 제목, 저자, 상태를 렌더링해야 한다", () => {
     const mockBook = {
       id: "1",
       title: "The Great Gatsby",

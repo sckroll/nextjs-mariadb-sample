@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AddBookForm from "./AddBookForm";
-import { vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 describe("AddBookForm", () => {
-  it("renders all required input fields", () => {
+  it("모든 필수 입력 필드를 렌더링해야 한다", () => {
     render(<AddBookForm onSubmitAction={vi.fn()} />);
     
     expect(screen.getByLabelText(/제목/i)).toBeInTheDocument();
@@ -14,7 +14,7 @@ describe("AddBookForm", () => {
     expect(screen.getByRole("button", { name: /등록하기/i })).toBeInTheDocument();
   });
 
-  it("calls onSubmitAction with correct data when submitted", async () => {
+  it("제출 시 올바른 데이터와 함께 onSubmitAction을 호출해야 한다", async () => {
     const mockSubmit = vi.fn();
     render(<AddBookForm onSubmitAction={mockSubmit} />);
     

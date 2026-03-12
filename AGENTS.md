@@ -16,13 +16,12 @@ This document defines the guidelines that AI agents (Gemini, Claude, etc.) must 
 - **Validation:** Zod
 - **Testing:** Vitest, React Testing Library
 
-## 3. Development Workflow
-
 ### 3.1 Test-Driven Development (TDD) Requirement
 - **Strictly adhere to the Red-Green-Refactor cycle.**
 - When developing new features or fixing bugs, you must FIRST write a **failing test (Red)** and run it to verify that it fails correctly.
 - Afterward, write the minimum amount of code required to pass the test (Green), and perform refactoring if necessary.
 - Test files must be co-located with the implementation files in the `src` directory (e.g., `src/app/page.test.tsx`), NOT in a separate `__tests__` folder.
+- **Test cases must be named in Korean.** (e.g., `it("사용자는 로그인을 할 수 있다", ...)` instead of `it("user can login", ...)`)
 
 ### 3.2 Git Commit Rules
 - Separate commits into logical units such as feature, fix, test, and chore.
@@ -37,6 +36,10 @@ This document defines the guidelines that AI agents (Gemini, Claude, etc.) must 
   render(resolvedComponent);
   ```
 - Ensure to properly mock Next.js server-side functions like `next/headers`, `next/navigation`, and auth session calls using `vi.mock()`.
+
+### 3.4 Documentation & Comments
+- **All functions must have JSDoc comments.** 
+- Based on global project guidelines, **JSDoc comments must be written in Korean.**
 
 ## 4. Database & Schema Management
 - When modifying the schema, update `src/db/schema.ts` and ensure you run `npx drizzle-kit push` to apply the changes to the database.
