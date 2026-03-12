@@ -3,7 +3,7 @@
 import { db } from "@/db";
 import { books } from "@/db/schema";
 import { bookSchema } from "@/lib/validations/book";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export async function createBook(userId: string, data: import("zod").infer<typeof bookSchema>) {
@@ -24,6 +24,11 @@ export async function createBook(userId: string, data: import("zod").infer<typeo
 
 export async function getBooks(userId: string) {
   return await db.select().from(books).where(eq(books.userId, userId)).orderBy(desc(books.createdAt));
+}
+
+export async function getBookById(id: string, userId: string) {
+  const result = await db.select().from(books).where(and(eq(books.id, id), eq(books.userId, userId)));
+  return result[0] || null;
 }
 
 export async function deleteBook(userId: string, bookId: string) {
