@@ -17,11 +17,18 @@ vi.mock("@/actions/book", () => ({
   updateProgress: vi.fn(),
 }));
 
+vi.mock("@/actions/note", () => ({
+  getNotes: vi.fn().mockResolvedValue([{ id: "note-1", content: "Test Note Content" }]),
+  createNote: vi.fn(),
+  deleteNote: vi.fn(),
+}));
+
 describe("BookDetailPage", () => {
-  it("renders book details and progress tracker", async () => {
+  it("renders book details, progress tracker, and notes", async () => {
     const resolvedComponent = await BookDetailPage({ params: Promise.resolve({ id: "1" }) });
     render(resolvedComponent);
     expect(screen.getByText("Detail Test Book")).toBeInTheDocument();
     expect(screen.getByText(/25 \/ 100 쪽/)).toBeInTheDocument();
+    expect(screen.getByText("Test Note Content")).toBeInTheDocument();
   });
 });
