@@ -43,8 +43,15 @@ This document defines the guidelines that AI agents (Gemini, Claude, etc.) must 
 - Maintain the 4 core tables required for Better Auth integration: `user`, `session`, `account`, and `verification`.
 
 ## 5. Writing and Executing Implementation Plans
-- Before implementing new features, create an implementation plan document in markdown format under the `@docs/superpowers/plans/` directory. Use checkboxes to track progress.
+- Before starting work on any item from `@docs/ROADMAP.md`, you must create a detailed implementation plan document in markdown format under the `@docs/superpowers/plans/` directory.
+- Use checkboxes (`- [ ]`) to track progress within the plan document.
 - All implementation work must strictly follow the steps defined in the plan.
 
+## 6. Updating Progress
+- Upon completing a task or a phase:
+    1. Update the checkboxes in the corresponding implementation plan in `@docs/superpowers/plans/`.
+    2. Update the progress status and checkboxes in `@docs/ROADMAP.md`.
+- Ensure all related documentation is synchronized with the actual state of the codebase.
+
 ---
-**Note to Agent:** Always keep the TDD and architectural rules defined in this file (`AGENTS.md`) in mind before changing or adding any code.
+**Note to Agent:** Always keep the TDD, roadmap-based planning, and architectural rules defined in this file (`AGENTS.md`) in mind before changing or adding any code.
