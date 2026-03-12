@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
+import DeleteBookButton from "@/components/books/DeleteBookButton";
 
 export default async function BookDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -22,6 +23,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
         </div>
         <div className="flex gap-2">
            <Link href={`/dashboard/books/${book.id}/edit`} className="px-4 py-2 border rounded hover:bg-gray-50 text-black">수정</Link>
+           <DeleteBookButton bookId={book.id} userId={session.user.id} />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 border-t pt-4">

@@ -3,7 +3,11 @@ import BookDetailPage from "./page";
 import { describe, it, expect, vi } from "vitest";
 
 vi.mock("next/headers", () => ({ headers: vi.fn() }));
-vi.mock("next/navigation", () => ({ redirect: vi.fn(), notFound: vi.fn() }));
+vi.mock("next/navigation", () => ({ 
+  redirect: vi.fn(), 
+  notFound: vi.fn(),
+  useRouter: vi.fn().mockReturnValue({ push: vi.fn() })
+}));
 vi.mock("@/lib/auth", () => ({
   auth: { api: { getSession: vi.fn().mockResolvedValue({ user: { id: "user-1" } }) } },
 }));
