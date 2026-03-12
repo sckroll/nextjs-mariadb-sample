@@ -18,10 +18,17 @@ vi.mock("@/actions/book", () => ({
   ]),
 }));
 
+vi.mock("@/actions/tag", () => ({
+  getTags: vi.fn().mockResolvedValue([{ id: "tag-1", name: "SF", color: "#000000" }]),
+  createTag: vi.fn(),
+  deleteTag: vi.fn(),
+}));
+
 describe("대시보드 페이지", () => {
   it("가져온 도서 목록을 렌더링해야 한다", async () => {
     const resolvedComponent = await DashboardPage({ searchParams: Promise.resolve({}) });
     render(resolvedComponent);
     expect(await screen.findByText("Test Book 1")).toBeInTheDocument();
+    expect(screen.getByText("SF")).toBeInTheDocument();
   });
 });

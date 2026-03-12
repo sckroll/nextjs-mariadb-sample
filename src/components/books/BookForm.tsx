@@ -1,19 +1,34 @@
 "use client";
 
-import { type books } from "@/db/schema";
+import { useState } from "react";
+import { type books, type tags } from "@/db/schema";
 
 type Book = typeof books.$inferSelect;
+type Tag = typeof tags.$inferSelect;
 
 interface Props {
   initialData?: Partial<Book>;
+  availableTags?: Tag[];
+  initialTagIds?: string[];
   onSubmitAction: (data: FormData) => void;
   buttonLabel?: string;
 }
 
-export default function BookForm({ initialData, onSubmitAction, buttonLabel = "저장하기" }: Props) {
+/**
+ * 도서 정보를 입력하거나 수정하는 폼 컴포넌트입니다. 태그 선택 기능을 포함합니다.
+ * @param {Props} props - 컴포넌트 속성
+ * @returns {JSX.Element} 도서 폼 UI
+ */
+export default function BookForm({ initialData, availableTags = [], initialTagIds = [], onSubmitAction, buttonLabel = "저장하기" }: Props) {
+  const [selectedTags, setSelectedTags] = useState<string[]>(initialTagIds);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    // 선택된 태그 ID들을 FormData에 추가
+    selectedTags.forEach(id => formData.append("tagIds", id));
+
     const newStatus = formData.get("status");
     const currentStatus = initialData?.status;
 
@@ -30,7 +45,7 @@ export default function BookForm({ initialData, onSubmitAction, buttonLabel = "�
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md bg-white p-6 rounded-lg border shadow-sm">
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">제목 *</label>
+        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1 text-black">제목 *</label>
         <input 
           id="title" 
           name="title" 
@@ -41,7 +56,7 @@ export default function BookForm({ initialData, onSubmitAction, buttonLabel = "�
         />
       </div>
       <div>
-        <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-1">저자</label>
+        <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-1 text-black">저자</label>
         <input 
           id="author" 
           name="author" 
@@ -51,7 +66,7 @@ export default function BookForm({ initialData, onSubmitAction, buttonLabel = "�
         />
       </div>
       <div>
-        <label htmlFor="publisher" className="block text-sm font-medium text-gray-700 mb-1">출판사</label>
+        <label htmlFor="publisher" className="block text-sm font-medium text-gray-700 mb-1 text-black">출판사</label>
         <input 
           id="publisher" 
           name="publisher" 
@@ -61,7 +76,7 @@ export default function BookForm({ initialData, onSubmitAction, buttonLabel = "�
         />
       </div>
       <div>
-        <label htmlFor="totalPages" className="block text-sm font-medium text-gray-700 mb-1">총 페이지 수 *</label>
+        <label htmlFor="totalPages" className="block text-sm font-medium text-gray-700 mb-1 text-black">총 페이지 수 *</label>
         <input 
           id="totalPages" 
           name="totalPages" 
@@ -73,7 +88,7 @@ export default function BookForm({ initialData, onSubmitAction, buttonLabel = "�
         />
       </div>
       <div>
-        <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">상태</label>
+        <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1 text-black">상태</label>
         <select 
           id="status" 
           name="status" 
@@ -85,7 +100,47 @@ export default function BookForm({ initialData, onSubmitAction, buttonLabel = "�
           <option value="COMPLETED">완독</option>
         </select>
       </div>
-      <button type="submit" className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition font-medium mt-2">
+
+      {availableTags.length > 0 && (
+        <div className="mt-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2 text-black">태그 선택</label>
+          <div className="flex flex-wrap gap-2">
+            {availableTags.map(tag => {
+              const isSelected = selectedTags.includes(tag.id);
+              return (
+                <label 
+                  key={tag.id}
+                  className={`
+                    flex items-center px-3 py-1.5 rounded-full border text-xs font-medium cursor-pointer transition-all
+                    ${isSelected ? 'shadow-sm' : 'bg-opacity-10 hover:bg-opacity-20'}
+                  `}
+                  style={{ 
+                    backgroundColor: isSelected ? tag.color : tag.color + "10",
+                    borderColor: tag.color + (isSelected ? "" : "40"),
+                    color: isSelected ? "white" : tag.color
+                  }}
+                >
+                  <input 
+                    type="checkbox"
+                    className="hidden"
+                    checked={isSelected}
+                    onChange={() => {
+                      setSelectedTags(prev => 
+                        prev.includes(tag.id) 
+                          ? prev.filter(id => id !== tag.id) 
+                          : [...prev, tag.id]
+                      );
+                    }}
+                  />
+                  {tag.name}
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <button type="submit" className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition font-medium mt-4">
         {buttonLabel}
       </button>
     </form>

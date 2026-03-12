@@ -1,5 +1,6 @@
 import { getBookById, getLatestProgress, updateProgress } from "@/actions/book";
 import { createNote, deleteNote, getNotes } from "@/actions/note";
+import { getBookTags } from "@/actions/tag";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
@@ -10,6 +11,13 @@ import NoteForm from "@/components/notes/NoteForm";
 import NoteList from "@/components/notes/NoteList";
 import { revalidatePath } from "next/cache";
 
+/**
+ * 도서 상세 정보를 표시하는 페이지 컴포넌트입니다.
+ * 독서 진행률, 독서 노트, 할당된 태그 등을 관리할 수 있습니다.
+ * @param {Object} props - 컴포넌트 속성
+ * @param {Promise<{ id: string }>} props.params - URL 파라미터 (도서 ID)
+ * @returns {Promise<JSX.Element>} 도서 상세 페이지 UI
+ */
 export default async function BookDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
@@ -19,9 +27,10 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
   
   if (!book) notFound();
 
-  const [latestProgress, notes] = await Promise.all([
+  const [latestProgress, notes, bookTags] = await Promise.all([
     getLatestProgress(book.id),
-    getNotes(book.id)
+    getNotes(book.id),
+    getBookTags(book.id)
   ]);
 
   const handleUpdateProgress = async (pages: number) => {
@@ -48,7 +57,21 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
         <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="text-3xl font-bold mb-2">{book.title}</h2>
-            <p className="text-lg text-gray-600">{book.author || "저자 미상"} | {book.publisher || "출판사 미상"}</p>
+            <p className="text-lg text-gray-600 mb-4">{book.author || "저자 미상"} | {book.publisher || "출판사 미상"}</p>
+            
+            {bookTags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                {bookTags.map(tag => (
+                  <span 
+                    key={tag.id}
+                    className="px-2 py-1 rounded-full border text-xs font-medium shadow-sm"
+                    style={{ borderColor: tag.color + "40", backgroundColor: tag.color + "10", color: tag.color }}
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex gap-2">
              <Link href={`/dashboard/books/${book.id}/edit`} className="px-4 py-2 border rounded hover:bg-gray-50 text-black transition">수정</Link>

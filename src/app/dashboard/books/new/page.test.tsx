@@ -2,10 +2,10 @@ import { render, screen } from "@testing-library/react";
 import NewBookPage from "./page";
 import { describe, it, expect, vi } from "vitest";
 
-// 내부 로직 테스트를 피하기 위해 AddBookForm 모킹
-vi.mock("@/components/books/AddBookForm", () => {
+// 내부 로직 테스트를 피하기 위해 BookForm 모킹
+vi.mock("@/components/books/BookForm", () => {
   return {
-    default: () => <div data-testid="mock-add-book-form">Mock Form</div>,
+    default: () => <div data-testid="mock-book-form">Mock Form</div>,
   };
 });
 
@@ -24,6 +24,11 @@ vi.mock("@/lib/auth", () => ({
   },
 }));
 
+vi.mock("@/actions/tag", () => ({
+  getTags: vi.fn().mockResolvedValue([]),
+  assignTagsToBook: vi.fn(),
+}));
+
 describe("새 도서 등록 페이지", () => {
   it("페이지 제목과 폼을 렌더링해야 한다", async () => {
     // NewBookPage는 비동기 서버 컴포넌트임
@@ -31,6 +36,6 @@ describe("새 도서 등록 페이지", () => {
     render(resolvedComponent);
     
     expect(screen.getByRole("heading", { name: /새 책 등록/i })).toBeInTheDocument();
-    expect(screen.getByTestId("mock-add-book-form")).toBeInTheDocument();
+    expect(screen.getByTestId("mock-book-form")).toBeInTheDocument();
   });
 });

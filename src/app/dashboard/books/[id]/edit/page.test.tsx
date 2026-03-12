@@ -2,6 +2,13 @@ import { render, screen } from "@testing-library/react";
 import EditBookPage from "./page";
 import { describe, it, expect, vi } from "vitest";
 
+// 내부 로직 테스트를 피하기 위해 BookForm 모킹
+vi.mock("@/components/books/BookForm", () => {
+  return {
+    default: ({ initialData }: any) => <div data-testid="mock-book-form">{initialData.title}</div>,
+  };
+});
+
 vi.mock("next/headers", () => ({ headers: vi.fn() }));
 vi.mock("next/navigation", () => ({ redirect: vi.fn(), notFound: vi.fn() }));
 vi.mock("@/lib/auth", () => ({
@@ -11,6 +18,11 @@ vi.mock("@/actions/book", () => ({
   getBookById: vi.fn().mockResolvedValue({ id: "1", title: "Edit Test Book", author: "Author Name", status: "WISH", totalPages: 100 }),
   updateBook: vi.fn(),
 }));
+vi.mock("@/actions/tag", () => ({
+  getTags: vi.fn().mockResolvedValue([]),
+  getBookTags: vi.fn().mockResolvedValue([]),
+  assignTagsToBook: vi.fn(),
+}));
 
 describe("도서 수정 페이지", () => {
   it("도서 정보를 포함한 수정 폼을 렌더링해야 한다", async () => {
@@ -18,6 +30,6 @@ describe("도서 수정 페이지", () => {
     render(resolvedComponent);
     
     expect(screen.getByRole("heading", { name: /책 정보 수정/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/제목/i)).toHaveValue("Edit Test Book");
+    expect(screen.getByTestId("mock-book-form")).toHaveTextContent("Edit Test Book");
   });
 });

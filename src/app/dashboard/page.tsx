@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { getBooks } from "@/actions/book";
+import { createTag, deleteTag, getTags } from "@/actions/tag";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import BookCard from "@/components/books/BookCard";
 import SearchFilter from "@/components/dashboard/SearchFilter";
+import TagManager from "@/components/tags/TagManager";
 import { Suspense } from "react";
+import { revalidatePath } from "next/cache";
 
 export default async function DashboardPage({ 
   searchParams 
@@ -16,10 +19,25 @@ export default async function DashboardPage({
   if (!session) redirect("/login");
 
   const resolvedSearchParams = await searchParams;
-  const books = await getBooks(session.user.id, {
-    search: resolvedSearchParams.search,
-    status: resolvedSearchParams.status,
-  });
+  const [books, tags] = await Promise.all([
+    getBooks(session.user.id, {
+      search: resolvedSearchParams.search,
+      status: resolvedSearchParams.status,
+    }),
+    getTags(session.user.id)
+  ]);
+
+  const handleCreateTag = async (name: string, color: string) => {
+    "use server";
+    await createTag(session.user.id, { name, color });
+    revalidatePath("/dashboard");
+  };
+
+  const handleDeleteTag = async (id: string) => {
+    "use server";
+    await deleteTag(id);
+    revalidatePath("/dashboard");
+  };
 
   return (
     <div>
@@ -30,6 +48,8 @@ export default async function DashboardPage({
         </Link>
       </div>
       
+      <TagManager tags={tags as any} onCreate={handleCreateTag} onDelete={handleDeleteTag} />
+
       <Suspense fallback={<div className="h-20 bg-gray-100 animate-pulse rounded-lg mb-8" />}>
         <SearchFilter />
       </Suspense>
