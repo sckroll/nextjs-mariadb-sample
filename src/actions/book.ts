@@ -31,6 +31,21 @@ export async function getBookById(id: string, userId: string) {
   return result[0] || null;
 }
 
+export async function updateBook(userId: string, bookId: string, data: import("zod").infer<typeof bookSchema>) {
+  const validated = bookSchema.parse(data);
+  await db.update(books)
+    .set({
+      ...validated,
+      rating: validated.rating ? validated.rating.toString() : null,
+      startDate: validated.startDate ? new Date(validated.startDate) : null,
+      endDate: validated.endDate ? new Date(validated.endDate) : null,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(books.id, bookId), eq(books.userId, userId)));
+  
+  return { success: true };
+}
+
 export async function deleteBook(userId: string, bookId: string) {
   // TODO: Add verification that the book belongs to the userId
   await db.delete(books).where(eq(books.id, bookId));
