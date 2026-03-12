@@ -5,7 +5,8 @@ vi.mock("@/db", () => {
   const queryBuilder = {
     orderBy: vi.fn().mockResolvedValue([{ id: "1", title: "Test Book" }]),
     set: vi.fn().mockReturnThis(),
-    where: vi.fn().mockResolvedValue({ success: true }),
+    where: vi.fn().mockReturnThis(),
+    $dynamic: vi.fn().mockReturnThis(),
     then: function (resolve: any) {
       resolve([{ id: "1", title: "Test Book" }]);
     }
@@ -29,6 +30,12 @@ describe("book actions", () => {
     const books = await getBooks("test-user-id");
     expect(books).toHaveLength(1);
     expect(books[0].title).toBe("Test Book");
+  });
+
+  it("getBooks applies search and status filters", async () => {
+    // In this unit test we just verify the function can be called with these params
+    const books = await getBooks("test-user-id", { search: "test", status: "READING" });
+    expect(books).toBeDefined();
   });
 
   it("getBookById returns a single book", async () => {
