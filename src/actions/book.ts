@@ -43,6 +43,11 @@ export async function getBookById(id: string, userId: string) {
 
 export async function updateBook(userId: string, bookId: string, data: import("zod").infer<typeof bookSchema>) {
   const validated = bookSchema.parse(data);
+  
+  // Get current status to check for transition
+  const currentBook = await db.select().from(books).where(and(eq(books.id, bookId), eq(books.userId, userId))).limit(1);
+  const statusChangedToWish = currentBook[0] && currentBook[0].status !== "WISH" && validated.status === "WISH";
+
   await db.update(books)
     .set({
       ...validated,
@@ -53,6 +58,10 @@ export async function updateBook(userId: string, bookId: string, data: import("z
     })
     .where(and(eq(books.id, bookId), eq(books.userId, userId)));
 
+  if (statusChangedToWish) {
+    await resetProgress(bookId);
+  }
+
   return { success: true };
 }
 
@@ -62,7 +71,17 @@ export async function deleteBook(userId: string, bookId: string) {
   return { success: true };
 }
 
+export async function resetProgress(bookId: string) {
+  await db.delete(readingProgress).where(eq(readingProgress.bookId, bookId));
+  return { success: true };
+}
+
 export async function updateProgress(bookId: string, readPages: number, recordedDate: string) {
+  const book = await db.select().from(books).where(eq(books.id, bookId)).limit(1);
+  if (!book[0] || book[0].status === "WISH") {
+    throw new Error("읽기 시작한 책만 진행률을 기록할 수 있습니다.");
+  }
+
   const id = randomUUID();
   await db.insert(readingProgress).values({
     id,

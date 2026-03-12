@@ -34,6 +34,10 @@ This document tracks the high-level progress of the ReadLog project and outlines
   - List notes specific to the selected book.
   - Delete existing notes.
 
+## ✅ Interim Task: Book Status Constraints & Logic (Completed)
+- [x] **WISH Status Restrictions:** Prevent progress updates when book is in `WISH` status.
+- [x] **Progress Reset:** Reset all reading records when book status is changed back to `WISH` (with confirmation).
+
 ## 🏷️ Phase 5: Tagging System
 - [ ] **Tag Management:** Create, edit, and delete user-specific tags (with colors).
 - [ ] **Assign Tags to Books:** UI to attach multiple tags to a single book.

@@ -14,6 +14,16 @@ export default function BookForm({ initialData, onSubmitAction, buttonLabel = "�
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const newStatus = formData.get("status");
+    const currentStatus = initialData?.status;
+
+    if (currentStatus && currentStatus !== "WISH" && newStatus === "WISH") {
+      const confirmed = window.confirm(
+        "상태를 '읽고 싶음'으로 변경하면 기존의 모든 독서 진행 기록이 초기화됩니다. 계속하시겠습니까?"
+      );
+      if (!confirmed) return;
+    }
+
     onSubmitAction(formData);
   };
 

@@ -65,6 +65,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
         bookId={book.id} 
         currentPages={latestProgress?.readPages || 0} 
         totalPages={book.totalPages}
+        status={book.status as any}
         onUpdate={handleUpdateProgress}
       />
 

@@ -1,4 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+let mockBookStatus = "READING";
 
 // Need to mock db call before importing the module that uses it
 vi.mock("@/db", () => {
@@ -10,7 +12,7 @@ vi.mock("@/db", () => {
     $dynamic: vi.fn().mockReturnThis(),
     limit: vi.fn().mockReturnThis(),
     then: function (resolve: any) {
-      resolve([{ id: "1", title: "Test Book", readPages: 50 }]);
+      resolve([{ id: "1", title: "Test Book", readPages: 50, status: mockBookStatus }]);
     }
   };
   return {
@@ -20,13 +22,18 @@ vi.mock("@/db", () => {
       update: vi.fn().mockReturnValue(queryBuilder),
       insert: vi.fn().mockReturnThis(),
       values: vi.fn().mockResolvedValue({ success: true }),
+      delete: vi.fn().mockReturnThis(),
     },
   };
 });
 
-import { getBooks, getBookById, updateBook, updateProgress, getLatestProgress } from "./book";
+import { getBooks, getBookById, updateBook, updateProgress, getLatestProgress, resetProgress } from "./book";
 
 describe("book actions", () => {
+  beforeEach(() => {
+    mockBookStatus = "READING";
+  });
+
   it("getBooks returns an array of books for a user", async () => {
     const books = await getBooks("test-user-id");
     expect(books).toHaveLength(1);
@@ -34,7 +41,6 @@ describe("book actions", () => {
   });
 
   it("getBooks applies search and status filters", async () => {
-    // In this unit test we just verify the function can be called with these params
     const books = await getBooks("test-user-id", { search: "test", status: "READING" });
     expect(books).toBeDefined();
   });
@@ -55,6 +61,10 @@ describe("book actions", () => {
 });
 
 describe("progress actions", () => {
+  beforeEach(() => {
+    mockBookStatus = "READING";
+  });
+
   it("updateProgress adds a new progress record", async () => {
     const result = await updateProgress("1", 50, "2026-03-12");
     expect(result.success).toBe(true);
@@ -63,5 +73,16 @@ describe("progress actions", () => {
   it("getLatestProgress returns the most recent progress for a book", async () => {
     const progress = await getLatestProgress("1");
     expect(progress?.readPages).toBe(50);
+  });
+
+  it("updateProgress fails if book status is WISH", async () => {
+    mockBookStatus = "WISH";
+    await expect(updateProgress("1", 50, "2026-03-12"))
+      .rejects.toThrow("읽기 시작한 책만 진행률을 기록할 수 있습니다.");
+  });
+
+  it("resetProgress removes all progress records", async () => {
+    const result = await resetProgress("1");
+    expect(result.success).toBe(true);
   });
 });
