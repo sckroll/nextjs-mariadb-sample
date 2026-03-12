@@ -17,13 +17,12 @@ This document tracks the high-level progress of the ReadLog project and outlines
 - [x] `AddBookForm` UI component with Vitest tests
 - [x] Connect `AddBookForm` to actual server actions
 
-## ⏳ Phase 3: Book Management & Dashboard (In Progress)
+## ✅ Phase 3: Book Management & Dashboard (Completed)
 - [x] **Dashboard Book List:** Fetch and display the user's books on the dashboard.
-  - Show book cover (or placeholder), title, author, and progress.
 - [x] **Book Detail Page:** A dedicated page (`/dashboard/books/[id]`) to view full book details.
 - [x] **Delete Book:** Allow users to delete a book from their library.
-- [ ] **Edit Book:** Allow users to update book info.
-- [ ] **Search & Filter:** Implement UI to filter books by status (`WISH`, `READING`, `COMPLETED`) and search by title.
+- [x] **Edit Book:** Allow users to update book info.
+- [x] **Search & Filter:** Implement UI to filter books by status and search by title.
 
 ## 📅 Phase 4: Reading Progress & Notes
 - [ ] **Reading Progress Tracking:**

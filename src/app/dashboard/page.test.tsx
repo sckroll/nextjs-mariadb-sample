@@ -3,7 +3,11 @@ import DashboardPage from "./page";
 import { describe, it, expect, vi } from "vitest";
 
 vi.mock("next/headers", () => ({ headers: vi.fn() }));
-vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
+vi.mock("next/navigation", () => ({ 
+  redirect: vi.fn(),
+  useRouter: vi.fn().mockReturnValue({ push: vi.fn() }),
+  useSearchParams: vi.fn().mockReturnValue(new URLSearchParams()),
+}));
 vi.mock("@/lib/auth", () => ({
   auth: { api: { getSession: vi.fn().mockResolvedValue({ user: { id: "user-1" } }) } },
 }));
@@ -16,7 +20,7 @@ vi.mock("@/actions/book", () => ({
 
 describe("DashboardPage", () => {
   it("renders fetched books", async () => {
-    const resolvedComponent = await DashboardPage();
+    const resolvedComponent = await DashboardPage({ searchParams: Promise.resolve({}) });
     render(resolvedComponent);
     expect(await screen.findByText("Test Book 1")).toBeInTheDocument();
   });
