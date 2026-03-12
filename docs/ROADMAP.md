@@ -53,6 +53,14 @@ This document tracks the high-level progress of the ReadLog project and outlines
 - [x] **Reading Calendar:**
   - Build a calendar view showing days with reading activity based on `reading_progress` logs.
 
+## ✅ Interim Task: Account Management & Auth UX (Completed)
+- [x] **Auth Redirection:** Redirect logged-in users from root and auth pages to dashboard.
+- [x] **Enhanced Registration:** Add Name and Profile Image URL fields to registration form.
+- [x] **Account Management:** 
+  - Page to update Name and Profile Image.
+  - Form to change password.
+  - Logout functionality.
+
 ## 🚀 Phase 7: Polish & Advanced Features (Upcoming)
 - [ ] Integrate Kakao Book Search API for automatic book info population.
 - [ ] Responsive UI refinements for mobile devices.
