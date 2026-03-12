@@ -24,8 +24,8 @@ export async function getMonthlyStatistics(userId: string, year: number, month: 
     .where(and(
       eq(books.userId, userId),
       eq(books.status, "COMPLETED"),
-      gte(books.endDate, startDate.toISOString().split('T')[0]),
-      lte(books.endDate, endDate.toISOString().split('T')[0])
+      gte(books.endDate, startDate),
+      lte(books.endDate, endDate)
     ));
 
   // 2. 해당 월에 읽은 총 페이지 수
@@ -36,8 +36,8 @@ export async function getMonthlyStatistics(userId: string, year: number, month: 
     .innerJoin(books, eq(readingProgress.bookId, books.id))
     .where(and(
       eq(books.userId, userId),
-      gte(readingProgress.recordedDate, startDate.toISOString().split('T')[0]),
-      lte(readingProgress.recordedDate, endDate.toISOString().split('T')[0])
+      gte(readingProgress.recordedDate, startDate),
+      lte(readingProgress.recordedDate, endDate)
     ));
 
   return {
@@ -66,8 +66,8 @@ export async function getDailyReadingLogs(userId: string, year: number, month: n
     .innerJoin(books, eq(readingProgress.bookId, books.id))
     .where(and(
       eq(books.userId, userId),
-      gte(readingProgress.recordedDate, startDate.toISOString().split('T')[0]),
-      lte(readingProgress.recordedDate, endDate.toISOString().split('T')[0])
+      gte(readingProgress.recordedDate, startDate),
+      lte(readingProgress.recordedDate, endDate)
     ))
     .groupBy(readingProgress.recordedDate);
 }
