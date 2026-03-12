@@ -2,12 +2,16 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getMonthlyStatistics } from "@/actions/statistics";
+import { getGoals, createGoal } from "@/actions/goal";
 import StatCard from "@/components/statistics/StatCard";
+import GoalProgress from "@/components/goals/GoalProgress";
+import GoalManager from "@/components/goals/GoalManager";
 import { BookCheck, FileText, Star } from "lucide-react";
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
 
 /**
- * 월별 독서 통계를 표시하는 페이지 컴포넌트입니다.
+ * 월별 독서 통계 및 목표를 표시하는 페이지 컴포넌트입니다.
  * @param {Object} props - 컴포넌트 속성
  * @param {Promise<{ year?: string, month?: string }>} props.searchParams - URL 쿼리 파라미터
  * @returns {Promise<JSX.Element>} 통계 페이지 UI
@@ -25,7 +29,16 @@ export default async function StatisticsPage({
   const year = Number(resolvedSearchParams.year) || now.getFullYear();
   const month = Number(resolvedSearchParams.month) || (now.getMonth() + 1);
 
-  const stats = await getMonthlyStatistics(session.user.id, year, month);
+  const [stats, goals] = await Promise.all([
+    getMonthlyStatistics(session.user.id, year, month),
+    getGoals(session.user.id)
+  ]);
+
+  const handleCreateGoal = async (data: any) => {
+    "use server";
+    await createGoal(session.user.id, data);
+    revalidatePath("/dashboard/statistics");
+  };
 
   const prevMonth = month === 1 ? 12 : month - 1;
   const prevYear = month === 1 ? year - 1 : year;
@@ -55,7 +68,7 @@ export default async function StatisticsPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <StatCard 
           label="완독한 책" 
           value={stats.booksCompleted} 
@@ -76,9 +89,41 @@ export default async function StatisticsPage({
         />
       </div>
 
-      {/* Placeholder for Goals and Calendar */}
-      <div className="mt-12 p-8 border border-dashed rounded-xl text-center text-gray-400 bg-white/50">
-        독서 목표와 캘린더 기능이 곧 추가됩니다!
+      <h3 className="text-xl font-bold mb-6 text-black">독서 목표</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {goals.map(goal => {
+          let current = 0;
+          let label = "";
+          let unit = "";
+
+          if (goal.targetType === "BOOKS") {
+            current = stats.booksCompleted;
+            label = goal.periodType === "MONTHLY" ? "이번 달 완독 목표" : "올해 완독 목표";
+            unit = "권";
+          } else if (goal.targetType === "PAGES") {
+            current = stats.pagesRead;
+            label = goal.periodType === "MONTHLY" ? "이번 달 페이지 목표" : "올해 페이지 목표";
+            unit = "쪽";
+          }
+
+          if (!label) return null;
+
+          return (
+            <GoalProgress 
+              key={goal.id}
+              label={label}
+              current={current}
+              target={goal.targetValue}
+              unit={unit}
+            />
+          );
+        })}
+      </div>
+      
+      <GoalManager onCreate={handleCreateGoal} />
+
+      <div className="mt-16 p-8 border border-dashed rounded-xl text-center text-gray-400 bg-white/50">
+        독서 캘린더 기능이 곧 추가됩니다!
       </div>
     </div>
   );
