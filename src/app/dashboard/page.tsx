@@ -10,10 +10,17 @@ import TagManager from "@/components/tags/TagManager";
 import { Suspense } from "react";
 import { revalidatePath } from "next/cache";
 
+/**
+ * 사용자의 메인 서재 대시보드 페이지입니다.
+ * 도서 목록 표시, 검색, 필터링 및 태그 관리 기능을 제공합니다.
+ * @param {Object} props - 컴포넌트 속성
+ * @param {Promise<{ search?: string, status?: string, tagId?: string }>} props.searchParams - URL 쿼리 파라미터
+ * @returns {Promise<JSX.Element>} 대시보드 페이지 UI
+ */
 export default async function DashboardPage({ 
   searchParams 
 }: { 
-  searchParams: Promise<{ search?: string, status?: string }> 
+  searchParams: Promise<{ search?: string, status?: string, tagId?: string }> 
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
@@ -23,6 +30,7 @@ export default async function DashboardPage({
     getBooks(session.user.id, {
       search: resolvedSearchParams.search,
       status: resolvedSearchParams.status,
+      tagId: resolvedSearchParams.tagId,
     }),
     getTags(session.user.id)
   ]);
@@ -51,13 +59,13 @@ export default async function DashboardPage({
       <TagManager tags={tags as any} onCreate={handleCreateTag} onDelete={handleDeleteTag} />
 
       <Suspense fallback={<div className="h-20 bg-gray-100 animate-pulse rounded-lg mb-8" />}>
-        <SearchFilter />
+        <SearchFilter tags={tags as any} />
       </Suspense>
       
       {books.length === 0 ? (
         <div className="border border-dashed border-gray-300 rounded-lg p-4 bg-white/50 flex flex-col items-center justify-center h-48 text-gray-400">
           <p className="mb-2">검색 결과가 없거나 아직 등록된 책이 없습니다.</p>
-          {!resolvedSearchParams.search && !resolvedSearchParams.status && (
+          {!resolvedSearchParams.search && !resolvedSearchParams.status && !resolvedSearchParams.tagId && (
             <Link href="/dashboard/books/new" className="text-blue-500 hover:underline">첫 책 등록하기</Link>
           )}
         </div>

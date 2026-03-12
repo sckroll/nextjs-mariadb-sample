@@ -29,6 +29,6 @@ describe("대시보드 페이지", () => {
     const resolvedComponent = await DashboardPage({ searchParams: Promise.resolve({}) });
     render(resolvedComponent);
     expect(await screen.findByText("Test Book 1")).toBeInTheDocument();
-    expect(screen.getByText("SF")).toBeInTheDocument();
+    expect(screen.getAllByText("SF").length).toBeGreaterThan(0);
   });
 });

@@ -38,12 +38,12 @@ This document tracks the high-level progress of the ReadLog project and outlines
 - [x] **WISH Status Restrictions:** Prevent progress updates when book is in `WISH` status.
 - [x] **Progress Reset:** Reset all reading records when book status is changed back to `WISH` (with confirmation).
 
-## 🏷️ Phase 5: Tagging System
-- [ ] **Tag Management:** Create, edit, and delete user-specific tags (with colors).
-- [ ] **Assign Tags to Books:** UI to attach multiple tags to a single book.
-- [ ] **Filter by Tags:** Allow users to filter their library using selected tags.
+## ✅ Phase 5: Tagging System (Completed)
+- [x] **Tag Management:** Create, edit, and delete user-specific tags (with colors).
+- [x] **Assign Tags to Books:** UI to attach multiple tags to a single book.
+- [x] **Filter by Tags:** Allow users to filter their library using selected tags.
 
-## 📊 Phase 6: Statistics, Goals & Calendar
+## 📊 Phase 6: Statistics, Goals & Calendar (Upcoming)
 - [ ] **Monthly Statistics:** 
   - Calculate books read, pages read, and average rating for the current month.
   - Display charts or summary cards on a `/dashboard/statistics` page.
