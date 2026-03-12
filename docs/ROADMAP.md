@@ -24,15 +24,15 @@ This document tracks the high-level progress of the ReadLog project and outlines
 - [x] **Edit Book:** Allow users to update book info.
 - [x] **Search & Filter:** Implement UI to filter books by status and search by title.
 
-## 📅 Phase 4: Reading Progress & Notes
-- [ ] **Reading Progress Tracking:**
+## ✅ Phase 4: Reading Progress & Notes (Completed)
+- [x] **Reading Progress Tracking:**
   - UI to input current page number.
   - Calculate and display progress percentage based on `total_pages`.
   - Save progress logs to the `reading_progress` table.
-- [ ] **Reading Notes:**
-  - Form to add a new note (with optional highlights and page numbers) on the Book Detail page.
+- [x] **Reading Notes:**
+  - Form to add a new note on the Book Detail page.
   - List notes specific to the selected book.
-  - Edit and delete existing notes.
+  - Delete existing notes.
 
 ## 🏷️ Phase 5: Tagging System
 - [ ] **Tag Management:** Create, edit, and delete user-specific tags (with colors).
