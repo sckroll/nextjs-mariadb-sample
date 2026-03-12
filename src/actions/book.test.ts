@@ -3,18 +3,19 @@ import { describe, it, expect, vi } from "vitest";
 // Need to mock db call before importing the module that uses it
 vi.mock("@/db", () => {
   const queryBuilder = {
-    orderBy: vi.fn().mockResolvedValue([{ id: "1", title: "Test Book" }]),
+    from: vi.fn().mockReturnThis(),
+    orderBy: vi.fn().mockReturnThis(),
     set: vi.fn().mockReturnThis(),
     where: vi.fn().mockReturnThis(),
     $dynamic: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
     then: function (resolve: any) {
-      resolve([{ id: "1", title: "Test Book" }]);
+      resolve([{ id: "1", title: "Test Book", readPages: 50 }]);
     }
   };
   return {
     db: {
-      select: vi.fn().mockReturnThis(),
-      from: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnValue(queryBuilder),
       where: vi.fn().mockReturnValue(queryBuilder),
       update: vi.fn().mockReturnValue(queryBuilder),
       insert: vi.fn().mockReturnThis(),
@@ -23,7 +24,7 @@ vi.mock("@/db", () => {
   };
 });
 
-import { getBooks, getBookById, updateBook } from "./book";
+import { getBooks, getBookById, updateBook, updateProgress, getLatestProgress } from "./book";
 
 describe("book actions", () => {
   it("getBooks returns an array of books for a user", async () => {
@@ -50,5 +51,17 @@ describe("book actions", () => {
       status: "READING"
     });
     expect(result.success).toBe(true);
+  });
+});
+
+describe("progress actions", () => {
+  it("updateProgress adds a new progress record", async () => {
+    const result = await updateProgress("1", 50, "2026-03-12");
+    expect(result.success).toBe(true);
+  });
+
+  it("getLatestProgress returns the most recent progress for a book", async () => {
+    const progress = await getLatestProgress("1");
+    expect(progress?.readPages).toBe(50);
   });
 });

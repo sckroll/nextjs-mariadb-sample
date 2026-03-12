@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { books } from "@/db/schema";
+import { books, readingProgress } from "@/db/schema";
 import { bookSchema } from "@/lib/validations/book";
 import { eq, desc, and, like } from "drizzle-orm";
 import { randomUUID } from "crypto";
@@ -9,7 +9,7 @@ import { randomUUID } from "crypto";
 export async function createBook(userId: string, data: import("zod").infer<typeof bookSchema>) {
   const validated = bookSchema.parse(data);
   const id = randomUUID();
-  
+
   await db.insert(books).values({
     id,
     userId,
@@ -18,7 +18,7 @@ export async function createBook(userId: string, data: import("zod").infer<typeo
     startDate: validated.startDate ? new Date(validated.startDate) : null,
     endDate: validated.endDate ? new Date(validated.endDate) : null,
   });
-  
+
   return { success: true, id };
 }
 
@@ -52,7 +52,7 @@ export async function updateBook(userId: string, bookId: string, data: import("z
       updatedAt: new Date(),
     })
     .where(and(eq(books.id, bookId), eq(books.userId, userId)));
-  
+
   return { success: true };
 }
 
@@ -60,4 +60,24 @@ export async function deleteBook(userId: string, bookId: string) {
   // TODO: Add verification that the book belongs to the userId
   await db.delete(books).where(eq(books.id, bookId));
   return { success: true };
+}
+
+export async function updateProgress(bookId: string, readPages: number, recordedDate: string) {
+  const id = randomUUID();
+  await db.insert(readingProgress).values({
+    id,
+    bookId,
+    readPages,
+    recordedDate: new Date(recordedDate),
+  });
+  return { success: true };
+}
+
+export async function getLatestProgress(bookId: string) {
+  const result = await db.select()
+    .from(readingProgress)
+    .where(eq(readingProgress.bookId, bookId))
+    .orderBy(desc(readingProgress.recordedDate), desc(readingProgress.createdAt))
+    .limit(1);
+  return result[0] || null;
 }
