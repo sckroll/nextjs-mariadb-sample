@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { tags } from "@/db/schema";
+import { tags, bookTags } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
@@ -43,4 +43,44 @@ export async function getTags(userId: string) {
 export async function deleteTag(tagId: string) {
   await db.delete(tags).where(eq(tags.id, tagId));
   return { success: true };
+}
+
+/**
+ * 도서에 태그를 할당합니다. 기존 매핑을 삭제하고 새로 등록합니다.
+ * @param {string} bookId - 도서 ID
+ * @param {string[]} tagIds - 할당할 태그 ID 목록
+ * @returns {Promise<{ success: boolean }>} 처리 결과
+ */
+export async function assignTagsToBook(bookId: string, tagIds: string[]) {
+  // 기존 매핑 삭제
+  await db.delete(bookTags).where(eq(bookTags.bookId, bookId));
+
+  if (tagIds.length > 0) {
+    // 새로운 매핑 등록
+    const values = tagIds.map(tagId => ({
+      bookId,
+      tagId,
+    }));
+    await db.insert(bookTags).values(values);
+  }
+
+  return { success: true };
+}
+
+/**
+ * 특정 도서에 할당된 모든 태그를 조회합니다.
+ * @param {string} bookId - 도서 ID
+ * @returns {Promise<Array>} 할당된 태그 목록
+ */
+export async function getBookTags(bookId: string) {
+  const result = await db.select({
+    id: tags.id,
+    name: tags.name,
+    color: tags.color,
+  })
+    .from(bookTags)
+    .innerJoin(tags, eq(bookTags.tagId, tags.id))
+    .where(eq(bookTags.bookId, bookId));
+  
+  return result;
 }
