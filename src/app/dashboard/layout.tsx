@@ -19,6 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <nav className="flex gap-4 items-center">
           <Link href="/dashboard" className="text-gray-600 hover:text-black">내 서재</Link>
           <Link href="/dashboard/statistics" className="text-gray-600 hover:text-black">통계</Link>
+          <Link href="/dashboard/calendar" className="text-gray-600 hover:text-black">캘린더</Link>
           <div className="text-sm text-gray-500 ml-4">{session.user.email}</div>
         </nav>
       </header>
