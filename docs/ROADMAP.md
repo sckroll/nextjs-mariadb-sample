@@ -64,6 +64,7 @@ This document tracks the high-level progress of the ReadLog project and outlines
 ## ✅ Phase 7: Polish & Advanced Features (In Progress)
 - [x] **Landing Page Redesign:** Implement responsive landing page based on Figma designs.
 - [x] **Login Page Redesign:** Implement responsive login page based on Figma designs (without social login).
+- [x] **Registration Page Redesign:** Implement responsive registration page based on Figma designs (without social login).
 - [ ] Integrate Kakao Book Search API for automatic book info population.
 - [ ] Responsive UI refinements for mobile devices.
 - [ ] Performance optimizations (caching, index tuning).
