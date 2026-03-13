@@ -23,6 +23,10 @@ vi.mock("@/actions/note", () => ({
   deleteNote: vi.fn(),
 }));
 
+vi.mock("@/actions/tag", () => ({
+  getBookTags: vi.fn().mockResolvedValue([{ id: "tag-1", name: "SF", color: "#000000" }]),
+}));
+
 describe("도서 상세 페이지", () => {
   it("도서 정보, 진행률, 노트를 렌더링해야 한다", async () => {
     const resolvedComponent = await BookDetailPage({ params: Promise.resolve({ id: "1" }) });
